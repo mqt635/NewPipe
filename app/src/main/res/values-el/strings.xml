@@ -688,4 +688,5 @@
     <string name="show_error_snackbar">Εμφάνιση μιας snackbar σφάλματος</string>
     <string name="background_player_already_playing_toast">Αναπαράγεται ήδη στο παρασκήνιο</string>
     <string name="detail_pinned_comment_view_description">Καρφιτσωμένο σχόλιο</string>
+    <string name="leak_canary_not_available">Το LeakCanary δεν είναι διαθέσιμο</string>
 </resources>

@@ -1,0 +1,4 @@
+Deze release bevat drie kleine oplossingen:
+• Vaste opslagtoegang op Android 10+
+• Vaste kiosken die open kunnen
+• Parseren van lange video's met een vaste duur

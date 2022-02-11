@@ -688,4 +688,5 @@
 \nBitte installiere einen Storage Access Framework kompatiblen Dateimanager.</string>
     <string name="background_player_already_playing_toast">Wird bereits im Hintergrund abgespielt</string>
     <string name="detail_pinned_comment_view_description">Angehefteter Kommentar</string>
+    <string name="leak_canary_not_available">LeakCanary ist nicht verfügbar</string>
 </resources>

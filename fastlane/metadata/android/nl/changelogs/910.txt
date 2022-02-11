@@ -1,0 +1,1 @@
+Verbeterd, databasemigratie waardoor NewPipe in zeldzame gevallen niet kon starten.

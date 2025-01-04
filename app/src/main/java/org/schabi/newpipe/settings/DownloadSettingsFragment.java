@@ -1,5 +1,7 @@
 package org.schabi.newpipe.settings;
 
+import static org.schabi.newpipe.util.Localization.assureCorrectAppLanguage;
+
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -27,12 +29,6 @@ import org.schabi.newpipe.util.FilePickerActivityHelper;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-
-import static org.schabi.newpipe.util.Localization.assureCorrectAppLanguage;
 
 public class DownloadSettingsFragment extends BasePreferenceFragment {
     public static final boolean IGNORE_RELEASE_ON_OLD_PATH = true;
@@ -66,16 +62,10 @@ public class DownloadSettingsFragment extends BasePreferenceFragment {
         prefStorageAsk = findPreference(downloadStorageAsk);
 
         final SwitchPreferenceCompat prefUseSaf = findPreference(storageUseSafPreference);
-        prefUseSaf.setDefaultValue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
         prefUseSaf.setChecked(NewPipeSettings.useStorageAccessFramework(ctx));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-                || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             prefUseSaf.setEnabled(false);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                prefUseSaf.setSummary(R.string.downloads_storage_use_saf_summary_api_29);
-            } else {
-                prefUseSaf.setSummary(R.string.downloads_storage_use_saf_summary_api_19);
-            }
+            prefUseSaf.setSummary(R.string.downloads_storage_use_saf_summary_api_29);
             prefStorageAsk.setSummary(R.string.downloads_storage_ask_summary_no_saf_notice);
         }
 
@@ -115,28 +105,15 @@ public class DownloadSettingsFragment extends BasePreferenceFragment {
 
     private void showPathInSummary(final String prefKey, @StringRes final int defaultString,
                                    final Preference target) {
-        String rawUri = defaultPreferences.getString(prefKey, null);
-        if (rawUri == null || rawUri.isEmpty()) {
+        final Uri uri = Uri.parse(defaultPreferences.getString(prefKey, ""));
+        if (uri.equals(Uri.EMPTY)) {
             target.setSummary(getString(defaultString));
             return;
         }
 
-        if (rawUri.charAt(0) == File.separatorChar) {
-            target.setSummary(rawUri);
-            return;
-        }
-        if (rawUri.startsWith(ContentResolver.SCHEME_FILE)) {
-            target.setSummary(new File(URI.create(rawUri)).getPath());
-            return;
-        }
-
-        try {
-            rawUri = URLDecoder.decode(rawUri, StandardCharsets.UTF_8.name());
-        } catch (final UnsupportedEncodingException e) {
-            // nothing to do
-        }
-
-        target.setSummary(rawUri);
+        final String summary = ContentResolver.SCHEME_FILE.equals(uri.getScheme())
+                ? uri.getPath() : uri.toString();
+        target.setSummary(summary);
     }
 
     private boolean isFileUri(final String path) {
@@ -177,15 +154,15 @@ public class DownloadSettingsFragment extends BasePreferenceFragment {
     }
 
     private void showMessageDialog(@StringRes final int title, @StringRes final int message) {
-        final AlertDialog.Builder msg = new AlertDialog.Builder(ctx);
-        msg.setTitle(title);
-        msg.setMessage(message);
-        msg.setPositiveButton(getString(R.string.ok), null);
-        msg.show();
+        new AlertDialog.Builder(ctx)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(getString(R.string.ok), null)
+                .show();
     }
 
     @Override
-    public boolean onPreferenceTreeClick(final Preference preference) {
+    public boolean onPreferenceTreeClick(@NonNull final Preference preference) {
         if (DEBUG) {
             Log.d(TAG, "onPreferenceTreeClick() called with: "
                     + "preference = [" + preference + "]");
@@ -253,8 +230,7 @@ public class DownloadSettingsFragment extends BasePreferenceFragment {
 
         forgetSAFTree(context, defaultPreferences.getString(key, ""));
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                && !FilePickerActivityHelper.isOwnFileUri(context, uri)) {
+        if (!FilePickerActivityHelper.isOwnFileUri(context, uri)) {
             // steps to acquire the selected path:
             //     1. acquire permissions on the new save path
             //     2. save the new path, if step(2) was successful
@@ -262,8 +238,8 @@ public class DownloadSettingsFragment extends BasePreferenceFragment {
                 context.grantUriPermission(context.getPackageName(), uri,
                         StoredDirectoryHelper.PERMISSION_FLAGS);
 
-                final StoredDirectoryHelper mainStorage
-                        = new StoredDirectoryHelper(context, uri, null);
+                final StoredDirectoryHelper mainStorage =
+                        new StoredDirectoryHelper(context, uri, null);
                 Log.i(TAG, "Acquiring tree success from " + uri.toString());
 
                 if (!mainStorage.canWrite()) {

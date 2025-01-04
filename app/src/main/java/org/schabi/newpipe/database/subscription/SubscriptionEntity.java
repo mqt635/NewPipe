@@ -1,6 +1,7 @@
 package org.schabi.newpipe.database.subscription;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -10,6 +11,7 @@ import androidx.room.PrimaryKey;
 import org.schabi.newpipe.extractor.channel.ChannelInfo;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.util.Constants;
+import org.schabi.newpipe.util.image.ImageStrategy;
 
 import static org.schabi.newpipe.database.subscription.SubscriptionEntity.SUBSCRIPTION_SERVICE_ID;
 import static org.schabi.newpipe.database.subscription.SubscriptionEntity.SUBSCRIPTION_TABLE;
@@ -26,6 +28,7 @@ public class SubscriptionEntity {
     public static final String SUBSCRIPTION_AVATAR_URL = "avatar_url";
     public static final String SUBSCRIPTION_SUBSCRIBER_COUNT = "subscriber_count";
     public static final String SUBSCRIPTION_DESCRIPTION = "description";
+    public static final String SUBSCRIPTION_NOTIFICATION_MODE  = "notification_mode";
 
     @PrimaryKey(autoGenerate = true)
     private long uid = 0;
@@ -48,13 +51,16 @@ public class SubscriptionEntity {
     @ColumnInfo(name = SUBSCRIPTION_DESCRIPTION)
     private String description;
 
+    @ColumnInfo(name = SUBSCRIPTION_NOTIFICATION_MODE)
+    private int notificationMode;
+
     @Ignore
     public static SubscriptionEntity from(@NonNull final ChannelInfo info) {
         final SubscriptionEntity result = new SubscriptionEntity();
         result.setServiceId(info.getServiceId());
         result.setUrl(info.getUrl());
-        result.setData(info.getName(), info.getAvatarUrl(), info.getDescription(),
-                info.getSubscriberCount());
+        result.setData(info.getName(), ImageStrategy.imageListToDbUrl(info.getAvatars()),
+                info.getDescription(), info.getSubscriberCount());
         return result;
     }
 
@@ -90,11 +96,12 @@ public class SubscriptionEntity {
         this.name = name;
     }
 
+    @Nullable
     public String getAvatarUrl() {
         return avatarUrl;
     }
 
-    public void setAvatarUrl(final String avatarUrl) {
+    public void setAvatarUrl(@Nullable final String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
 
@@ -114,6 +121,15 @@ public class SubscriptionEntity {
         this.description = description;
     }
 
+    @NotificationMode
+    public int getNotificationMode() {
+        return notificationMode;
+    }
+
+    public void setNotificationMode(@NotificationMode final int notificationMode) {
+        this.notificationMode = notificationMode;
+    }
+
     @Ignore
     public void setData(final String n, final String au, final String d, final Long sc) {
         this.setName(n);
@@ -125,7 +141,7 @@ public class SubscriptionEntity {
     @Ignore
     public ChannelInfoItem toChannelInfoItem() {
         final ChannelInfoItem item = new ChannelInfoItem(getServiceId(), getUrl(), getName());
-        item.setThumbnailUrl(getAvatarUrl());
+        item.setThumbnails(ImageStrategy.dbUrlToImageList(getAvatarUrl()));
         item.setSubscriberCount(getSubscriberCount());
         item.setDescription(getDescription());
         return item;

@@ -21,10 +21,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.evernote.android.state.State;
 import com.jakewharton.rxbinding4.widget.RxTextView;
+import com.livefront.bridge.Bridge;
 
-import org.schabi.newpipe.App;
-import org.schabi.newpipe.CheckForNewAppVersion;
 import org.schabi.newpipe.MainActivity;
 import org.schabi.newpipe.R;
 import org.schabi.newpipe.databinding.SettingsLayoutBinding;
@@ -37,13 +37,11 @@ import org.schabi.newpipe.settings.preferencesearch.PreferenceSearchResultListen
 import org.schabi.newpipe.settings.preferencesearch.PreferenceSearcher;
 import org.schabi.newpipe.util.DeviceUtils;
 import org.schabi.newpipe.util.KeyboardUtil;
+import org.schabi.newpipe.util.ReleaseVersionUtil;
 import org.schabi.newpipe.util.ThemeHelper;
 import org.schabi.newpipe.views.FocusOverlayView;
 
 import java.util.concurrent.TimeUnit;
-
-import icepick.Icepick;
-import icepick.State;
 
 /*
  * Created by Christian Schabesberger on 31.08.15.
@@ -94,7 +92,7 @@ public class SettingsActivity extends AppCompatActivity implements
         assureCorrectAppLanguage(this);
 
         super.onCreate(savedInstanceBundle);
-        Icepick.restoreInstanceState(this, savedInstanceBundle);
+        Bridge.restoreInstanceState(this, savedInstanceBundle);
         final boolean restored = savedInstanceBundle != null;
 
         final SettingsLayoutBinding settingsLayoutBinding =
@@ -126,7 +124,7 @@ public class SettingsActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(@NonNull final Bundle outState) {
         super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
+        Bridge.saveInstanceState(this, outState);
     }
 
     @Override
@@ -170,7 +168,7 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onPreferenceStartFragment(final PreferenceFragmentCompat caller,
+    public boolean onPreferenceStartFragment(@NonNull final PreferenceFragmentCompat caller,
                                              final Preference preference) {
         showSettingsFragment(instantiateFragment(preference.getFragment()));
         return true;
@@ -267,7 +265,7 @@ public class SettingsActivity extends AppCompatActivity implements
      */
     private void ensureSearchRepresentsApplicationState() {
         // Check if the update settings are available
-        if (!CheckForNewAppVersion.isReleaseApk(App.getApp())) {
+        if (!ReleaseVersionUtil.INSTANCE.isReleaseApk()) {
             SettingsResourceRegistry.getInstance()
                     .getEntryByPreferencesResId(R.xml.update_settings)
                     .setSearchable(false);

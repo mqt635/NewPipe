@@ -6,6 +6,7 @@ package org.schabi.newpipe.error;
 public enum UserAction {
     USER_REPORT("user report"),
     UI_ERROR("ui error"),
+    DATABASE_IMPORT_EXPORT("database import or export"),
     SUBSCRIPTION_CHANGE("subscription change"),
     SUBSCRIPTION_UPDATE("subscription update"),
     SUBSCRIPTION_GET("get subscription"),
@@ -19,6 +20,7 @@ public enum UserAction {
     REQUESTED_PLAYLIST("requested playlist"),
     REQUESTED_KIOSK("requested kiosk"),
     REQUESTED_COMMENTS("requested comments"),
+    REQUESTED_COMMENT_REPLIES("requested comment replies"),
     REQUESTED_FEED("requested feed"),
     REQUESTED_BOOKMARK("bookmark"),
     DELETE_FROM_HISTORY("delete from history"),
@@ -26,10 +28,11 @@ public enum UserAction {
     DOWNLOAD_OPEN_DIALOG("download open dialog"),
     DOWNLOAD_POSTPROCESSING("download post-processing"),
     DOWNLOAD_FAILED("download failed"),
+    NEW_STREAMS_NOTIFICATIONS("new streams notifications"),
     PREFERENCES_MIGRATION("migration of preferences"),
     SHARE_TO_NEWPIPE("share to newpipe"),
-    CHECK_FOR_NEW_APP_VERSION("check for new app version");
-
+    CHECK_FOR_NEW_APP_VERSION("check for new app version"),
+    OPEN_INFO_ITEM_DIALOG("open info item dialog");
 
     private final String message;
 

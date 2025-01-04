@@ -16,8 +16,9 @@
 \n2. Log in when asked
 \n3. Click on ‘All data included’, then on ‘Deselect all’, then select only ‘subscriptions’ and click ‘OK’
 \n4. Click on ‘Next step’ and then on ‘Create export’
-\n5. Click on the ‘Download’ button after it appears and
-\n6. From the downloaded takeout zip extract the .json file (usually under ‘YouTube and YouTube Music/subscriptions/subscriptions.json’) and import it here.</string>
+\n5. Click on the ‘Download’ button after it appears
+\n6. Click on IMPORT FILE below and select the downloaded .zip file
+\n7. [If the .zip import fails] Extract the .csv file (usually under ‘YouTube and YouTube Music/subscriptions/subscriptions.csv’), click on IMPORT FILE below and select the extracted csv file</string>
     <string name="subtitle_activity_recaptcha">Press ‘Done’ when solved</string>
     <string name="restricted_video">This video is age restricted.
 \n
@@ -75,8 +76,12 @@
     <string name="settings_category_player_behavior_title">Behaviour</string>
     <string name="peertube_instance_url_summary">Select your favourite PeerTube instances</string>
     <string name="resume_on_audio_focus_gain_summary">Continue playing after interruptions (e.g. phone calls)</string>
-    <string name="download_thumbnail_summary">Turn off to prevent loading thumbnails, saving data and memory usage. Changes clear both in-memory and on-disc image cache.</string>
     <string name="upload_date_text">Published on %1$s</string>
     <string name="error_report_button_text">Report this error via e-mail</string>
     <string name="night_theme_summary">Select your favorite night theme – %s</string>
+    <string name="no_player_found">No stream player found. Install VLC\?</string>
+    <string name="install">Install</string>
+    <string name="ok">Okay</string>
+    <string name="open_in_browser">Open in browser</string>
+    <string name="no_player_found_toast">No stream player found (you can install VLC to play it).</string>
 </resources>
